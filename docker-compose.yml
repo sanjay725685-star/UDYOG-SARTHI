@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  udyog-sarthi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: udyog_sarthi_platform
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=production
+      - PORT=3005
+    restart: unless-stopped
