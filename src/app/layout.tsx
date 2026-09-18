@@ -7,102 +7,126 @@ import Navigation from '../components/Navigation';
 import DemoFlowBar from '../components/DemoFlowBar';
 import AIChatDrawer from '../components/AIChatDrawer';
 import Link from 'next/link';
-import { Sparkles, Shield, Compass, BookOpen, Layers } from 'lucide-react';
+import { Sparkles, Shield, Compass, BookOpen, Layers, Phone, Mail, Globe, ExternalLink, Info } from 'lucide-react';
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 pb-24">
-      {/* Top Header */}
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800 antialiased">
+      {/* 3-Tier Official Government Header */}
       <Navigation onOpenAIChat={() => setIsAIChatOpen(true)} />
 
-      {/* Main Page Content */}
-      <main className="flex-1 w-full">{children}</main>
+      {/* Main Page Content Viewport */}
+      <main className="flex-1 w-full" id="main-content">
+        {children}
+      </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 mt-16 pt-12 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-800">
+      {/* =========================================================================
+          AUTHENTIC GOVERNMENT PORTAL FOOTER (NIC / E-GOVERNANCE STANDARD)
+         ========================================================================= */}
+      <footer className="bg-[#0b2545] text-slate-300 text-xs border-t-4 border-[#005a9c] mt-12 pt-10 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          
+          {/* Main Footer Links Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-700">
             
-            {/* Col 1: Brand & Tagline */}
+            {/* Col 1: Portal Identity & Legal Disclaimer */}
             <div className="space-y-3 md:col-span-1">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-sarthi-600 flex items-center justify-center text-white font-bold text-sm">
-                  उS
+              <div className="space-y-1">
+                <div className="text-base font-black tracking-tight text-white flex items-center gap-1.5">
+                  <span>UDYOG SARTHI</span>
+                  <span className="text-xs font-normal text-slate-300">(उद्योग सारथी)</span>
                 </div>
-                <span className="font-bold text-base text-white">
-                  UDYOG <span className="text-sarthi-400">SARTHI</span>
-                </span>
+                <div className="text-[11px] font-semibold text-slate-400">
+                  AI-Powered Industrial Approval & Compliance Coordination Platform
+                </div>
               </div>
-              <p className="text-slate-400 text-[11px] leading-relaxed">
-                &quot;From Application to Approval — One Intelligent Regulatory Journey&quot;
+
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                National Single Window Regulatory Framework • Ministry of Commerce & Industry • Government of India.
               </p>
-              <div className="text-[10px] bg-slate-800 p-2 rounded border border-slate-700 text-slate-300">
-                <strong>Smart India Hackathon 2026 Prototype</strong>
-                <br />Designed for evaluation. Mock integration architecture for NSWS & Maharashtra MAITRI.
+
+              <div className="p-2.5 rounded bg-[#071a30] border border-slate-700 text-[10px] text-slate-300 leading-tight space-y-1">
+                <div className="font-bold text-amber-400 uppercase">Smart India Hackathon 2026 Prototype</div>
+                <div>Demonstration prototype. External systems (NSWS, MAITRI, MIDC) cited as benchmarks.</div>
               </div>
             </div>
 
-            {/* Col 2: Core Modules */}
+            {/* Col 2: Services & Clearances */}
             <div className="space-y-2">
-              <div className="text-slate-200 font-bold uppercase tracking-wider text-[11px]">
-                Platform Modules
+              <div className="text-white font-bold uppercase tracking-wider text-[11px] border-b border-slate-700 pb-1">
+                Industrial Services
               </div>
               <ul className="space-y-1.5 text-[11px]">
-                <li><Link href="/register" className="hover:text-white transition">Business Registration Wizard</Link></li>
-                <li><Link href="/discovery" className="hover:text-white transition">AI Approval Discovery Engine</Link></li>
-                <li><Link href="/dependency-graph" className="hover:text-white transition">React Flow Dependency Graph</Link></li>
-                <li><Link href="/pre-audit" className="hover:text-white transition">AI Document Pre-Audit & OCR</Link></li>
-                <li><Link href="/bottlenecks" className="hover:text-white transition">Critical Path & Bottlenecks</Link></li>
-                <li><Link href="/journey" className="hover:text-white transition">Workflow Orchestration Timeline</Link></li>
+                <li><Link href="/discovery" className="hover:text-white transition">Know Your Approvals</Link></li>
+                <li><Link href="/register" className="hover:text-white transition">New Industrial Application (CAF)</Link></li>
+                <li><Link href="/journey" className="hover:text-white transition">Application Status & Timeline</Link></li>
+                <li><Link href="/documents" className="hover:text-white transition">Document Checklist & Vault</Link></li>
+                <li><Link href="/pre-audit" className="hover:text-white transition">AI Document Pre-Scrutiny</Link></li>
+                <li><Link href="/bottlenecks" className="hover:text-white transition">Clearance Dependency & Bottlenecks</Link></li>
               </ul>
             </div>
 
-            {/* Col 3: Role Portals */}
+            {/* Col 3: Departments & Portals */}
             <div className="space-y-2">
-              <div className="text-slate-200 font-bold uppercase tracking-wider text-[11px]">
-                Role-Based Workspaces
+              <div className="text-white font-bold uppercase tracking-wider text-[11px] border-b border-slate-700 pb-1">
+                Participating Authorities
               </div>
               <ul className="space-y-1.5 text-[11px]">
-                <li><Link href="/dashboard" className="hover:text-white transition">Entrepreneur Dashboard</Link></li>
-                <li><Link href="/officer" className="hover:text-white transition">Department Officer Queue</Link></li>
-                <li><Link href="/officer/review/APP-2026-MPCB-0842" className="hover:text-white transition">AI Regulatory Review Assistant</Link></li>
-                <li><Link href="/nodal" className="hover:text-white transition">Nodal Officer & Escalations</Link></li>
-                <li><Link href="/admin/rules" className="hover:text-white transition">Regulatory Rules Engine (Admin)</Link></li>
-                <li><Link href="/analytics" className="hover:text-white transition">Performance Analytics BI</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">Maharashtra Pollution Control Board (MPCB)</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">MIDC Town Planning & Industrial Area</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">Directorate of Industrial Safety & Health (DISH)</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">Maharashtra Fire Services (Directorate of Fire)</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">MSEDCL Power Distribution Utility</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">Directorate of Steam Boilers</Link></li>
               </ul>
             </div>
 
-            {/* Col 4: Hackathon Presentation */}
+            {/* Col 4: Important Links per Section 19 */}
             <div className="space-y-2">
-              <div className="text-slate-200 font-bold uppercase tracking-wider text-[11px]">
-                Evaluation & References
+              <div className="text-white font-bold uppercase tracking-wider text-[11px] border-b border-slate-700 pb-1">
+                Important Links
               </div>
               <ul className="space-y-1.5 text-[11px]">
-                <li><Link href="/impact" className="hover:text-white transition">Impact & Quantitative Benefits</Link></li>
-                <li><Link href="/feasibility" className="hover:text-white transition">Feasibility & Phased Rollout</Link></li>
-                <li><Link href="/viability" className="hover:text-white transition">Viability & Business Model</Link></li>
-                <li><Link href="/challenges" className="hover:text-white transition">Challenges & Risks</Link></li>
-                <li><Link href="/risk-mitigation" className="hover:text-white transition">Risk Mitigation Strategies</Link></li>
-                <li><Link href="/security" className="hover:text-white transition">Security & RBAC Architecture</Link></li>
-                <li><Link href="/references" className="hover:text-white transition">Research & Single-Window Citations</Link></li>
+                <li><Link href="/about" className="hover:text-white transition">About</Link></li>
+                <li><Link href="/discovery" className="hover:text-white transition">Services</Link></li>
+                <li><Link href="/departments" className="hover:text-white transition">Departments</Link></li>
+                <li><Link href="/support" className="hover:text-white transition">Help</Link></li>
+                <li><Link href="/support" className="hover:text-white transition">Contact</Link></li>
+                <li><Link href="/references" className="hover:text-white transition">Privacy Policy</Link></li>
+                <li><Link href="/references" className="hover:text-white transition">Terms of Use</Link></li>
+                <li><Link href="/support" className="hover:text-white transition">Accessibility</Link></li>
+                <li><Link href="/directory" className="hover:text-white transition">Sitemap</Link></li>
               </ul>
             </div>
+
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+          {/* Statutory Authority Disclaimer Notice */}
+          <div className="p-3 bg-[#071a30] border border-slate-700 rounded text-[11px] text-slate-300 leading-relaxed space-y-1">
             <div>
-              © 2026 UDYOG SARTHI. Built for Smart India Hackathon 2026.
+              <span className="font-bold text-amber-400">Statutory Notice:</span> “AI-assisted information does not constitute statutory approval. Final decisions remain with the competent authority.”
             </div>
-            <div className="text-amber-400/90 text-center sm:text-right">
-              Statutory Notice: Prototype demonstration only. All regulatory clearances require formal department sanction.
+            <div className="text-slate-400 text-[10px]">
+              “This prototype is developed for Smart India Hackathon 2026.”
             </div>
           </div>
+
+          {/* Bottom Copyright & Last Updated Strip */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2 border-t border-slate-800">
+            <div>
+              UDYOG SARTHI (उद्योग सारथी) • AI-Powered Industrial Approval & Compliance Coordination Platform
+            </div>
+            <div className="text-slate-400 font-mono text-[10px]">
+              Prototype Demonstration Portal • SIH 2026
+            </div>
+          </div>
+
         </div>
       </footer>
 
-      {/* Floating Demo Flow Bar */}
+      {/* Non-Obtrusive Compact Demo Flow Guide (Docked at bottom-right, collapsible) */}
       <DemoFlowBar />
 
       {/* Sarthi AI Regulatory Assistant Drawer */}
@@ -115,10 +139,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <title>UDYOG SARTHI — AI-Powered Industrial Approval Platform</title>
+        <title>UDYOG SARTHI | Single Window Industrial Approval & Compliance Platform</title>
         <meta
           name="description"
-          content="From Application to Approval — One Intelligent Regulatory Journey for Smart India Hackathon 2026"
+          content="Single Window Industrial Approval & Compliance Platform — Smart India Hackathon 2026 Prototype"
         />
       </head>
       <body>

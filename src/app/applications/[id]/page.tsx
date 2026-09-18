@@ -21,7 +21,13 @@ import {
   Award,
   Sparkles,
   ChevronRight,
-  Building2
+  Building2,
+  MapPin,
+  IndianRupee,
+  Users,
+  Calendar,
+  Layers,
+  Info
 } from 'lucide-react';
 
 function ApplicationDetailContent() {
@@ -29,70 +35,134 @@ function ApplicationDetailContent() {
   const searchParams = useSearchParams();
   const { approvals, documents, queries, auditLogs, project, business } = useApp();
 
-  const appId = (params?.id as string) || 'APP-2026-MPCB-0842';
+  const appId = (params?.id as string) || 'US-2026-0001';
   const showCertOnLoad = searchParams.get('certificate') === 'true';
 
-  // Find linked approval
+  // Find linked approval or default to MPCB-CTE
   const approval = approvals.find(a => a.applicationId === appId || a.code === 'MPCB-CTE') || approvals[3];
   const linkedDocs = documents.filter(d => d.requiredFor.includes(approval.code));
   const linkedQueries = queries.filter(q => q.approvalCode === approval.code || q.applicationId === appId);
 
+  const [activeTab, setActiveTab] = useState<
+    'OVERVIEW' | 'TIMELINE' | 'DOCUMENTS' | 'AI_PRE_SCRUTINY' | 'QUERIES' | 'COMPLIANCE'
+  >('OVERVIEW');
   const [isCertModalOpen, setIsCertModalOpen] = useState(showCertOnLoad);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
-  // 5-Stage Stepper for Application Detail
-  const stages = [
-    { name: 'Submitted', done: true, date: approval.applicationDate || '02 Mar 2026' },
-    { name: 'AI Pre-Audit', done: true, date: '03 Mar 2026' },
-    { name: 'Officer Review', done: true, date: '06 Mar 2026' },
+  // Section 10: Exact 7-Event Vertical Timeline
+  const verticalTimelineEvents = [
     {
-      name: 'Department Query',
-      done: approval.status === 'COMPLETED' || linkedQueries.every(q => q.status === 'resolved'),
-      active: approval.status === 'ACTION_REQUIRED',
-      date: '15 Mar 2026'
+      title: 'Application Submitted',
+      date: '02 Mar 2026',
+      time: '10:30 AM IST',
+      department: 'Single Window Clearing Cell',
+      officer: 'Applicant Submission (Self)',
+      action: 'Common Application Form (CAF) & preliminary industrial dossier lodged successfully.',
+      status: 'completed'
     },
     {
-      name: 'Sanction / Order',
-      done: approval.status === 'COMPLETED',
-      date: approval.approvalDate || 'Pending'
+      title: 'Document Verification',
+      date: '03 Mar 2026',
+      time: '11:15 AM IST',
+      department: 'MAITRI Verification Desk',
+      officer: 'Shri R. K. Shinde (Scrutiny Clerk)',
+      action: 'Mandatory checklist format, land deed, and digital signature validity verified.',
+      status: 'completed'
+    },
+    {
+      title: 'AI Pre-Scrutiny',
+      date: '03 Mar 2026',
+      time: '11:45 AM IST',
+      department: 'Udyog Sarthi Regulatory Engine',
+      officer: 'Automated Pre-Scrutiny Sub-system',
+      action: 'OCR extraction performed. Engineering parameter validation flagged potential ETP sizing discrepancy.',
+      status: 'completed'
+    },
+    {
+      title: 'Department Review',
+      date: '06 Mar 2026',
+      time: '02:00 PM IST',
+      department: 'Maharashtra Pollution Control Board (MPCB)',
+      officer: 'Er. Sunita Patil (Sub-Regional Officer)',
+      action: 'Technical evaluation of effluent generation, air emission stacks, and hazardous waste storage.',
+      status: 'completed'
+    },
+    {
+      title: 'Query Raised',
+      date: '10 Mar 2026',
+      time: '04:30 PM IST',
+      department: 'Maharashtra Pollution Control Board (MPCB)',
+      officer: 'Er. Sunita Patil (Sub-Regional Officer)',
+      action: 'Clarification query raised regarding hydraulic retention mass balance of the effluent treatment plant.',
+      status: 'completed'
+    },
+    {
+      title: 'Applicant Response',
+      date: '12 Mar 2026',
+      time: '11:00 AM IST',
+      department: 'Single Window Investor Gateway',
+      officer: 'Rajesh Sharma (Authorized Signatory)',
+      action: 'Revised engineering blueprint and technical explanatory note uploaded by applicant.',
+      status: 'completed'
+    },
+    {
+      title: 'Final Decision',
+      date: '15 Mar 2026',
+      time: '03:30 PM IST',
+      department: 'Maharashtra Pollution Control Board (MPCB)',
+      officer: 'Competent Statutory Authority',
+      action: 'Final statutory Consent to Establish (CTE) granted under Section 25 of Water Act 1974.',
+      status: approval.status === 'COMPLETED' ? 'completed' : 'pending'
     }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+      {/* Government Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs text-slate-500 font-medium">
+        <Link href="/" className="hover:text-[#0b2545]">Home</Link>
+        <span>/</span>
+        <Link href="/dashboard" className="hover:text-[#0b2545]">Applicant Dashboard</Link>
+        <span>/</span>
+        <span className="text-slate-900 font-bold">Application Dossier</span>
+      </nav>
+
+      {/* =========================================================================
+          SECTION 10 HEADER: APPLICATION ID & PROJECT
+         ========================================================================= */}
+      <div className="bg-white border border-slate-300 p-5 rounded shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-sarthi-700 mb-1">
-            <span>Application Dossier</span>
+          <div className="flex items-center space-x-2 text-xs font-mono text-[#005a9c] mb-1">
+            <span className="font-bold bg-blue-50 text-[#005a9c] px-2 py-0.5 rounded border border-blue-200">
+              Application ID: {appId}
+            </span>
             <span>•</span>
-            <span className="font-bold">{appId}</span>
+            <span className="text-slate-600 font-sans">Single Window Clearance Dossier</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            {approval.name}
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0b2545] tracking-tight">
+            Project: Pune EV Manufacturing Unit
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            {approval.department} • Ref: <span className="font-mono text-slate-800">{approval.code}</span>
+            Statutory Approval: <strong>{approval.name}</strong> • Department: <strong>{approval.department}</strong> ({approval.departmentCode})
           </p>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           {approval.certificateIssued && (
             <button
               onClick={() => setIsCertModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-md transition"
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition"
             >
               <Award className="w-4 h-4 text-amber-300" />
-              <span>View Sanction Certificate</span>
+              <span>View Sanction Order</span>
             </button>
           )}
 
           {approval.status === 'ACTION_REQUIRED' && (
             <Link
               href="/queries"
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-md transition"
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition"
             >
               <MessageSquare className="w-4 h-4" />
               <span>Respond to Open Query</span>
@@ -101,7 +171,7 @@ function ApplicationDetailContent() {
 
           <button
             onClick={() => window.print()}
-            className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition"
+            className="flex items-center space-x-1.5 px-3.5 py-2 rounded bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold transition"
           >
             <Printer className="w-4 h-4" />
             <span>Print Dossier</span>
@@ -109,238 +179,459 @@ function ApplicationDetailContent() {
         </div>
       </div>
 
-      {/* 5-Stage Visual Stepper */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
-        <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-6">
-          Lifecycle Tracking Stepper
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 relative">
-          {stages.map((stg, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center space-y-2">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition shadow-2xs ${
-                  stg.done
-                    ? 'bg-emerald-600 text-white'
-                    : stg.active
-                    ? 'bg-amber-500 text-white animate-pulse ring-4 ring-amber-100'
-                    : 'bg-slate-100 text-slate-400 border border-slate-200'
-                }`}
-              >
-                {stg.done ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
-              </div>
-              <div>
-                <div className="text-xs font-bold text-slate-900">{stg.name}</div>
-                <div className="text-[10px] text-slate-500 font-mono mt-0.5">{stg.date}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Tabs Bar */}
+      <div className="border-b border-slate-300 flex items-center space-x-1 overflow-x-auto text-xs font-bold">
+        <button
+          onClick={() => setActiveTab('OVERVIEW')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'OVERVIEW'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Particulars & Metadata
+        </button>
+        <button
+          onClick={() => setActiveTab('TIMELINE')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'TIMELINE'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Lifecycle Timeline (7 Stages)
+        </button>
+        <button
+          onClick={() => setActiveTab('DOCUMENTS')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'DOCUMENTS'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Documents ({linkedDocs.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('AI_PRE_SCRUTINY')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'AI_PRE_SCRUTINY'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          AI-Assisted Pre-Scrutiny
+        </button>
+        <button
+          onClick={() => setActiveTab('QUERIES')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'QUERIES'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Department Queries ({linkedQueries.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('COMPLIANCE')}
+          className={`px-4 py-2.5 border-b-2 transition ${
+            activeTab === 'COMPLIANCE'
+              ? 'border-[#0b2545] text-[#0b2545]'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          Post-Approval Compliance
+        </button>
       </div>
 
-      {/* Main Grid: Details + Submitted Documents */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left 2 Cols: Details, Officer Remarks & Queries */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* =========================================================================
+          TAB 1: OVERVIEW & PARTICULARS
+         ========================================================================= */}
+      {activeTab === 'OVERVIEW' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* Metadata Card */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3">
-              Application Metadata & Regulatory Particulars
+          {/* Applicant Details */}
+          <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545] border-b border-slate-200 pb-2">
+              Applicant Details
             </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div>
-                <span className="text-slate-500 block text-[11px]">Industrial Enterprise:</span>
-                <span className="font-bold text-slate-900">{business.name}</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[11px]">Authorized Signatory:</span>
-                <span className="font-semibold text-slate-900">{business.applicantName}</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[11px]">Statutory SLA Deadline:</span>
-                <span className="font-semibold text-slate-900">{approval.timelineDays} Calendar Days</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[11px]">Assigned Officer:</span>
-                <span className="font-semibold text-slate-900">{approval.officerName || 'Queue Allocation'}</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[11px]">Prescribed Statutory Fee:</span>
-                <span className="font-bold text-emerald-700">₹{approval.fee.toLocaleString('en-IN')} (Paid)</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[11px]">Current Scrutiny Stage:</span>
-                <span className="font-bold text-amber-700">{approval.stage}</span>
-              </div>
-            </div>
-
-            {approval.whyBlockedReason && (
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 mt-2">
-                <div className="font-bold text-amber-800 flex items-center gap-1.5 mb-1">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  <span>Officer Remark / Open Requirement:</span>
-                </div>
-                {approval.whyBlockedReason}
-              </div>
-            )}
+            <table className="w-full text-xs text-left">
+              <tbody className="divide-y divide-slate-100">
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Enterprise Name</td>
+                  <td className="py-2 font-bold text-slate-900">{business.name}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Authorized Signatory</td>
+                  <td className="py-2 font-semibold text-slate-800">{business.applicantName}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Corporate PAN</td>
+                  <td className="py-2 font-mono font-bold text-slate-900">{business.pan}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">State GSTIN</td>
+                  <td className="py-2 font-mono font-bold text-slate-900">{business.gstin}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Registered Address</td>
+                  <td className="py-2 text-slate-700">{business.registeredAddress}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Authorized Email / Mobile</td>
+                  <td className="py-2 text-slate-700">{business.email} • {business.mobile}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          {/* Department Queries Desk on this App */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center space-x-2">
-                <MessageSquare className="w-5 h-5 text-sarthi-600" />
-                <h3 className="text-sm font-bold text-slate-900">
-                  Department Query History ({linkedQueries.length})
-                </h3>
+          {/* Project Details */}
+          <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545] border-b border-slate-200 pb-2">
+              Project Details
+            </h3>
+            <table className="w-full text-xs text-left">
+              <tbody className="divide-y divide-slate-100">
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Project Title</td>
+                  <td className="py-2 font-bold text-slate-900">{project.name}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Location</td>
+                  <td className="py-2 font-semibold text-slate-800">{project.midcArea}, Pune, Maharashtra</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Proposed Capital Investment</td>
+                  <td className="py-2 font-bold text-slate-900">₹{project.proposedInvestmentCr} Crores (Capex)</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Direct Employment Potential</td>
+                  <td className="py-2 font-bold text-slate-900">{project.totalEmployees} Personnel</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Land Area Allocated</td>
+                  <td className="py-2 text-slate-700">{(project.plotAreaSqM || 25000).toLocaleString('en-IN')} sq. metres (MIDC Plot A-12/1)</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-slate-500 font-medium">Pollution Classification</td>
+                  <td className="py-2 text-slate-700">Orange Category (Moderate Pollution)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Applicable Approvals Summary */}
+          <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-3 md:col-span-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545] border-b border-slate-200 pb-2">
+              Applicable Approval Details & Departmental Actions
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded">
+                <span className="text-slate-500 text-[11px] block">Statutory Clearance</span>
+                <strong className="text-slate-900 block mt-0.5">{approval.name}</strong>
               </div>
-              <Link href="/queries" className="text-xs font-bold text-sarthi-600 hover:underline">
-                Open Query Desk
-              </Link>
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded">
+                <span className="text-slate-500 text-[11px] block">Nodal Department</span>
+                <strong className="text-slate-900 block mt-0.5">{approval.department}</strong>
+              </div>
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded">
+                <span className="text-slate-500 text-[11px] block">Mandated SLA Timeline</span>
+                <strong className="text-slate-900 block mt-0.5">{approval.timelineDays} Calendar Days</strong>
+              </div>
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded">
+                <span className="text-slate-500 text-[11px] block">Prescribed Statutory Fee</span>
+                <strong className="text-slate-900 block mt-0.5">₹{approval.fee.toLocaleString('en-IN')} (Paid)</strong>
+              </div>
             </div>
 
-            {linkedQueries.length === 0 ? (
-              <div className="text-xs text-slate-500 py-4 text-center">No queries raised on this application.</div>
-            ) : (
-              <div className="space-y-3">
-                {linkedQueries.map(q => (
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded text-xs text-slate-800 leading-relaxed">
+              <strong>Departmental Scrutiny Note:</strong> Application APP-2026-MPCB-0842 is assigned to Er. Sunita Patil, Sub-Regional Officer Pune. Scrutiny is proceeding in accordance with the Water (Prevention and Control of Pollution) Act 1974.
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 2: VERTICAL TIMELINE (EXACT 7 SPECIFIED STAGES)
+         ========================================================================= */}
+      {activeTab === 'TIMELINE' && (
+        <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-6">
+          <div className="border-b border-slate-200 pb-3">
+            <h3 className="text-sm font-bold text-[#0b2545]">
+              Statutory Processing & Scrutiny Timeline
+            </h3>
+            <p className="text-xs text-slate-500">
+              Chronological log of administrative actions, inspections, and applicant submissions
+            </p>
+          </div>
+
+          <div className="relative pl-6 space-y-8 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+            {verticalTimelineEvents.map((evt, idx) => (
+              <div key={idx} className="relative group">
+                {/* Dot */}
+                <div
+                  className={`absolute -left-[27px] top-0.5 w-4 h-4 rounded-full border-2 bg-white flex items-center justify-center ${
+                    evt.status === 'completed'
+                      ? 'border-emerald-600 text-emerald-600'
+                      : 'border-slate-400 text-slate-400'
+                  }`}
+                >
                   <div
-                    key={q.id}
-                    className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-3 text-xs"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="font-bold text-slate-900">{q.officerName}</div>
+                    className={`w-2 h-2 rounded-full ${
+                      evt.status === 'completed' ? 'bg-emerald-600' : 'bg-slate-300'
+                    }`}
+                  />
+                </div>
+
+                {/* Event Card */}
+                <div className="bg-slate-50 border border-slate-200 p-4 rounded text-xs space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-200 pb-2">
+                    <span className="font-bold text-slate-900 text-sm">
+                      {idx + 1}. {evt.title}
+                    </span>
+                    <span className="font-mono text-slate-600 text-[11px]">
+                      {evt.date} • {evt.time}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="text-slate-500">Department / Cell:</span>{' '}
+                      <strong className="text-slate-800">{evt.department}</strong>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Officer / Role:</span>{' '}
+                      <strong className="text-slate-800">{evt.officer}</strong>
+                    </div>
+                  </div>
+
+                  <p className="text-slate-700 leading-relaxed pt-1">
+                    <strong>Action Recorded:</strong> {evt.action}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 3: DOCUMENTS
+         ========================================================================= */}
+      {activeTab === 'DOCUMENTS' && (
+        <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h3 className="text-sm font-bold text-[#0b2545]">
+                Mandatory Documentation Dossier
+              </h3>
+              <p className="text-xs text-slate-500">
+                Uploaded blueprints, affidavits, and statutory declarations for {approval.code}
+              </p>
+            </div>
+            <Link
+              href="/documents"
+              className="px-3 py-1.5 rounded bg-[#0b2545] hover:bg-[#005a9c] text-white text-xs font-bold transition"
+            >
+              Upload / Replace Document
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto border border-slate-200 rounded">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#f1f5f9] text-[#0b2545] font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                  <th className="px-4 py-2.5">Document Title</th>
+                  <th className="px-4 py-2.5">Category</th>
+                  <th className="px-4 py-2.5">File Particulars</th>
+                  <th className="px-4 py-2.5">Pre-Scrutiny Verification</th>
+                  <th className="px-4 py-2.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 text-slate-800">
+                {linkedDocs.map(doc => (
+                  <tr key={doc.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-3 font-semibold text-slate-900">{doc.name}</td>
+                    <td className="px-4 py-3 text-slate-600">{doc.category}</td>
+                    <td className="px-4 py-3 font-mono text-slate-500 text-[11px]">
+                      {doc.fileName || 'Pending_Upload.pdf'} ({doc.fileSize || '1.8 MB'})
+                    </td>
+                    <td className="px-4 py-3">
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          q.status === 'resolved'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : q.status === 'responded'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-amber-100 text-amber-900'
+                        className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
+                          doc.status === 'verified'
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                            : doc.status === 'needs_review'
+                            ? 'bg-amber-50 text-amber-900 border-amber-300'
+                            : 'bg-slate-50 text-slate-700 border-slate-300'
                         }`}
                       >
-                        {q.status.toUpperCase()}
+                        {doc.status === 'verified' ? 'Verified (100%)' : doc.status === 'needs_review' ? 'Clarification Needed' : 'Uploaded'}
                       </span>
-                    </div>
-
-                    <p className="text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-slate-200">
-                      &quot;{q.queryText}&quot;
-                    </p>
-
-                    {q.applicantResponse && (
-                      <div className="bg-sarthi-50 p-3 rounded-lg border border-sarthi-200 space-y-1">
-                        <div className="text-[10px] font-bold text-sarthi-800 uppercase">
-                          Applicant Response ({q.responseDate}):
-                        </div>
-                        <p className="text-slate-800">{q.applicantResponse}</p>
-                        {q.attachedDocName && (
-                          <div className="text-[11px] font-mono text-sarthi-700 font-medium">
-                            Attachment: {q.attachedDocName}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href="/pre-audit"
+                        className="text-[#005a9c] hover:underline font-bold"
+                      >
+                        Inspect OCR
+                      </Link>
+                    </td>
+                  </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 4: AI-ASSISTED PRE-SCRUTINY
+         ========================================================================= */}
+      {activeTab === 'AI_PRE_SCRUTINY' && (
+        <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-5">
+          <div className="border-b border-slate-200 pb-3">
+            <h3 className="text-sm font-bold text-[#0b2545]">
+              AI-Assisted Pre-Scrutiny Verification Summary
+            </h3>
+            <p className="text-xs text-slate-500">
+              Automated document validation, engineering flow calculations, and cross-registry concordance
+            </p>
+          </div>
+
+          {/* Statutory Disclaimer */}
+          <div className="p-3 bg-blue-50 border-l-4 border-[#005a9c] text-xs text-slate-800 leading-relaxed">
+            <strong>Statutory Disclaimer:</strong> AI-generated outputs are provided for assistance and pre-scrutiny only. Final decisions and statutory approvals are made exclusively by the competent government authority.
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded text-xs space-y-1">
+              <span className="text-slate-500 block text-[11px]">Document Classification</span>
+              <strong className="text-emerald-700 flex items-center gap-1 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+              </strong>
+              <p className="text-slate-600 text-[11px] pt-1">
+                All 10 required architectural and environmental formats correctly identified.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded text-xs space-y-1">
+              <span className="text-slate-500 block text-[11px]">OCR Extraction</span>
+              <strong className="text-emerald-700 flex items-center gap-1 font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+              </strong>
+              <p className="text-slate-600 text-[11px] pt-1">
+                Corporate PAN & GSTIN matched against CBDT & GSTN registry database.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded text-xs space-y-1">
+              <span className="text-slate-500 block text-[11px]">Rule-Based Validation</span>
+              <strong className="text-amber-700 flex items-center gap-1 font-bold">
+                <AlertTriangle className="w-3.5 h-3.5" /> Warning / Attention Required
+              </strong>
+              <p className="text-slate-600 text-[11px] pt-1">
+                Effluent sizing equation in Doc-7 verified at 42 m³/day; clarification submitted.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 5: QUERIES
+         ========================================================================= */}
+      {activeTab === 'QUERIES' && (
+        <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h3 className="text-sm font-bold text-[#0b2545]">
+                Department Query & Clarification Desk
+              </h3>
+              <p className="text-xs text-slate-500">
+                Official statutory queries raised under the Water & Air Acts
+              </p>
+            </div>
+            <Link
+              href="/queries"
+              className="px-3 py-1.5 rounded bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition"
+            >
+              Open Full Query Desk
+            </Link>
+          </div>
+
+          <div className="space-y-3">
+            {linkedQueries.map(q => (
+              <div key={q.id} className="p-4 rounded border border-slate-200 bg-slate-50 text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <strong className="text-slate-900">{q.officerName}</strong>
+                  <span className="font-mono text-slate-500 text-[11px]">{q.raisedDate}</span>
+                </div>
+                <div className="bg-white p-3 border border-slate-200 rounded text-slate-800">
+                  &quot;{q.queryText}&quot;
+                </div>
+                {q.applicantResponse && (
+                  <div className="bg-emerald-50 border border-emerald-200 p-3 rounded text-emerald-900">
+                    <strong className="block text-[11px] uppercase mb-1">Applicant Response ({q.responseDate}):</strong>
+                    {q.applicantResponse}
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-
-          {/* Immutable Audit Trail Logs */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
-              <History className="w-5 h-5 text-slate-700" />
-              <h3 className="text-sm font-bold text-slate-900">
-                Immutable Status History & Officer Audit Log
-              </h3>
-            </div>
-
-            <div className="space-y-3">
-              {auditLogs.map(log => (
-                <div key={log.id} className="text-xs p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-1">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                    <span className="font-bold text-slate-700">{log.officer}</span>
-                    <span>{log.date}</span>
-                  </div>
-                  <div className="font-bold text-slate-900">{log.stage} ({log.status})</div>
-                  <p className="text-slate-600 leading-relaxed">{log.remarks}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
+      )}
 
-        {/* Right 1 Col: Linked Documents Dossier */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-900">
-                Mandatory Dossier Files
-              </h3>
-              <span className="text-xs text-slate-500 font-mono">{linkedDocs.length} Documents</span>
+      {/* =========================================================================
+          TAB 6: COMPLIANCE
+         ========================================================================= */}
+      {activeTab === 'COMPLIANCE' && (
+        <div className="bg-white border border-slate-300 rounded p-6 shadow-xs space-y-4">
+          <div className="border-b border-slate-200 pb-3">
+            <h3 className="text-sm font-bold text-[#0b2545]">
+              Post-Approval Statutory Compliance & Periodic Returns
+            </h3>
+            <p className="text-xs text-slate-500">
+              Prescribed statutory obligations following grant of Consent to Establish (CTE)
+            </p>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-start space-x-3">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-slate-900">Environmental Statement (Form V):</strong>
+                <p className="text-slate-600 mt-0.5">Annual environmental audit submission mandated by 30th September each financial year.</p>
+              </div>
             </div>
 
-            <div className="space-y-2.5">
-              {linkedDocs.map(doc => (
-                <div
-                  key={doc.id}
-                  className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100 transition space-y-2 text-xs"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="font-bold text-slate-900 leading-tight">{doc.name}</div>
-                    {doc.status === 'verified' ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    ) : (
-                      <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-                    )}
-                  </div>
-
-                  <div className="text-[11px] font-mono text-slate-500 truncate">
-                    {doc.fileName || 'Pending upload'}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-200 text-[10px]">
-                    <span className="text-slate-500 font-mono">OCR: {doc.confidence}%</span>
-                    <button
-                      onClick={() => setIsScannerOpen(true)}
-                      className="font-bold text-sarthi-700 hover:underline"
-                    >
-                      Inspect AI
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-start space-x-3">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-slate-900">Water Cess / Flow Meter Telemetry:</strong>
+                <p className="text-slate-600 mt-0.5">Continuous digital flow meter data uplink to MPCB Central Server before commercial commissioning.</p>
+              </div>
             </div>
 
-            <div className="pt-2">
-              <Link
-                href="/pre-audit"
-                className="w-full py-2.5 px-3 rounded-xl bg-sarthi-50 hover:bg-sarthi-100 text-sarthi-700 font-bold text-xs flex items-center justify-center gap-1.5 border border-sarthi-200 transition"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Pre-Audit Another File</span>
-              </Link>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded flex items-start space-x-3">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-slate-900">Consent to Operate (CTO) Application:</strong>
+                <p className="text-slate-600 mt-0.5">Mandatory application 60 days prior to commencement of trial production or trial run.</p>
+              </div>
             </div>
           </div>
         </div>
+      )}
 
-      </div>
-
-      {/* Modals */}
-      <CertificateModal
-        isOpen={isCertModalOpen}
-        onClose={() => setIsCertModalOpen(false)}
-        approvalCode={approval.code}
-      />
-
-      <DocumentScannerModal
-        isOpen={isScannerOpen}
-        onClose={() => setIsScannerOpen(false)}
-        initialDocId="doc-7"
-      />
+      {/* Certificate Modal */}
+      {isCertModalOpen && (
+        <CertificateModal
+          isOpen={isCertModalOpen}
+          onClose={() => setIsCertModalOpen(false)}
+          approvalCode={approval.code}
+        />
+      )}
 
     </div>
   );
@@ -348,7 +639,7 @@ function ApplicationDetailContent() {
 
 export default function ApplicationDetailPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-500 font-mono">Loading Application Dossier...</div>}>
+    <Suspense fallback={<div className="p-10 text-center text-xs text-slate-500">Loading application dossier...</div>}>
       <ApplicationDetailContent />
     </Suspense>
   );

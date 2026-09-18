@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 import RoleSwitcher from './RoleSwitcher';
 import {
@@ -23,7 +23,11 @@ import {
   ChevronDown,
   Info,
   Shield,
-  Briefcase
+  Briefcase,
+  Search,
+  Phone,
+  Globe,
+  User
 } from 'lucide-react';
 
 interface NavigationProps {
@@ -32,267 +36,346 @@ interface NavigationProps {
 
 export default function Navigation({ onOpenAIChat }: NavigationProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentRole, notifications } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [language, setLanguage] = useState<'EN' | 'HI'>('EN');
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  // Role-specific navigation items
-  const getNavLinks = () => {
-    switch (currentRole) {
-      case 'officer':
-        return [
-          { name: 'Application Queue', href: '/officer', icon: Layers },
-          { name: 'AI Review Assistant', href: '/officer/review/APP-2026-MPCB-0842', icon: Sparkles },
-          { name: 'Queries Desk', href: '/queries', icon: MessageSquare },
-          { name: 'Bottleneck Intel', href: '/bottlenecks', icon: GitFork },
-          { name: 'Directory', href: '/directory', icon: Compass }
-        ];
-      case 'nodal':
-        return [
-          { name: 'Nodal Overview', href: '/nodal', icon: Shield },
-          { name: 'Bottlenecks', href: '/bottlenecks', icon: GitFork },
-          { name: 'Grievance Desk', href: '/support', icon: HelpCircle },
-          { name: 'System Analytics', href: '/analytics', icon: Activity },
-          { name: 'Directory', href: '/directory', icon: Compass }
-        ];
-      case 'admin':
-        return [
-          { name: 'Admin Console', href: '/admin', icon: Layers },
-          { name: 'Rules Engine', href: '/admin/rules', icon: ShieldCheck },
-          { name: 'Approval Directory', href: '/directory', icon: Compass },
-          { name: 'Analytics BI', href: '/analytics', icon: Activity },
-          { name: 'Security & Audit', href: '/security', icon: Shield }
-        ];
-      case 'entrepreneur':
-      default:
-        return [
-          { name: 'Dashboard', href: '/dashboard', icon: Layers },
-          { name: 'Approvals Discovery', href: '/discovery', icon: Compass },
-          { name: 'Dependency Graph', href: '/dependency-graph', icon: GitFork },
-          { name: 'AI Pre-Audit', href: '/pre-audit', icon: Sparkles },
-          { name: 'Documents', href: '/documents', icon: FileCheck },
-          { name: 'Journey', href: '/journey', icon: Activity },
-          { name: 'Queries', href: '/queries', icon: MessageSquare }
-        ];
+  // Accessibility Font Scaling handlers
+  const setFontSize = (size: 'sm' | 'md' | 'lg') => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('font-size-sm', 'font-size-md', 'font-size-lg');
+      document.documentElement.classList.add(`font-size-${size}`);
     }
   };
 
-  const navLinks = getNavLinks();
-
-  const presentationLinks = [
-    { name: 'Impact & Benefits', href: '/impact' },
-    { name: 'Feasibility & Rollout', href: '/feasibility' },
-    { name: 'Viability & Business Model', href: '/viability' },
-    { name: 'Challenges & Risks', href: '/challenges' },
-    { name: 'Risk Mitigation', href: '/risk-mitigation' },
-    { name: 'Security Architecture', href: '/security' },
-    { name: 'Research & Single-Window Citations', href: '/references' }
+  // Primary Horizontal Navigation Links (per government requirements)
+  const mainNavLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'About Udyog Sarthi', href: '/about' },
+    { name: 'Industrial Approvals', href: '/directory' },
+    { name: 'Know Your Approvals', href: '/discovery' },
+    { name: 'Application', href: '/register' },
+    { name: 'Application Status', href: '/track' },
+    { name: 'Compliance', href: '/compliance' },
+    { name: 'Departments', href: '/departments' },
+    { name: 'Help & Support', href: '/support' }
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-      {/* Top microbar for national single-window context & SIH prototype badge */}
-      <div className="bg-gradient-to-r from-sarthi-950 via-sarthi-900 to-slate-900 text-white text-[11px] px-4 py-1 flex items-center justify-between border-b border-sarthi-800/40">
-        <div className="flex items-center space-x-2">
-          <span className="flex space-x-1 items-center">
-            <span className="w-2 h-2 rounded-full bg-[#FF9933]" />
-            <span className="w-2 h-2 rounded-full bg-white" />
-            <span className="w-2 h-2 rounded-full bg-[#138808]" />
-          </span>
-          <span className="font-semibold text-slate-200 tracking-wide">
-            UDYOG SARTHI — AI-Powered Industrial Approval & Compliance Coordination Platform
-          </span>
-          <span className="hidden lg:inline text-slate-400">|</span>
-          <span className="hidden lg:inline italic text-slate-300">
-            &quot;From Application to Approval — One Intelligent Regulatory Journey&quot;
-          </span>
-        </div>
-        <div className="flex items-center space-x-3 text-[11px]">
-          <span className="bg-amber-500/20 text-amber-300 border border-amber-400/40 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
-            SIH 2026 Prototype
-          </span>
-          <span className="text-slate-400 hidden md:inline">API-Ready / Prototype Mock</span>
-        </div>
-      </div>
+    <header className="w-full bg-white border-b border-slate-300">
+      
+      {/* Skip to Main Content Link (Accessibility) */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to Main Content
+      </a>
 
-      {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      {/* =========================================================================
+          TIER 1: TOP GOVERNMENT UTILITY BAR
+         ========================================================================= */}
+      <div className="bg-[#f1f5f9] border-b border-slate-200 text-slate-700 text-[11px] py-1 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           
-          {/* Brand Logo & Tag */}
+          {/* Left: Government of India / Ministry Tag */}
           <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center space-x-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sarthi-800 to-blue-700 flex items-center justify-center text-white shadow-md shadow-sarthi-900/20 group-hover:scale-105 transition transform">
-                <span className="font-black text-xl tracking-tight">उS</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-black text-lg tracking-tight text-slate-900">
-                    UDYOG <span className="text-sarthi-600">SARTHI</span>
-                  </span>
-                  <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
-                    AI-CORE
-                  </span>
-                </div>
-                <div className="text-[10px] font-medium text-slate-500 -mt-0.5">
-                  Single Window Regulatory Engine
-                </div>
-              </div>
+            <span className="flex items-center space-x-1 font-semibold text-slate-800">
+              <span className="w-2.5 h-2 bg-[#FF9933] inline-block" />
+              <span className="w-2.5 h-2 bg-white border border-slate-300 inline-block" />
+              <span className="w-2.5 h-2 bg-[#138808] inline-block" />
+              <span className="ml-1">भारत सरकार | Government of India</span>
+            </span>
+            <span className="text-slate-300 hidden md:inline">|</span>
+            <span className="text-slate-600 hidden md:inline font-medium">
+              Ministry of Commerce & Industry • Single Window Initiative
+            </span>
+          </div>
+
+          {/* Right: Accessibility Controls & Quick Links */}
+          <div className="flex items-center space-x-4 text-[11px]">
+            {/* Font Sizing Controls */}
+            <div className="flex items-center space-x-1 border-r border-slate-300 pr-3 font-mono">
+              <span className="text-slate-500 mr-1 hidden sm:inline">Text Size:</span>
+              <button
+                onClick={() => setFontSize('sm')}
+                className="px-1.5 py-0.5 rounded bg-white hover:bg-slate-200 border border-slate-300 text-[10px] font-bold"
+                title="Decrease font size"
+                aria-label="Decrease font size"
+              >
+                A-
+              </button>
+              <button
+                onClick={() => setFontSize('md')}
+                className="px-1.5 py-0.5 rounded bg-white hover:bg-slate-200 border border-slate-300 text-[11px] font-bold"
+                title="Normal font size"
+                aria-label="Normal font size"
+              >
+                A
+              </button>
+              <button
+                onClick={() => setFontSize('lg')}
+                className="px-1.5 py-0.5 rounded bg-white hover:bg-slate-200 border border-slate-300 text-[12px] font-bold"
+                title="Increase font size"
+                aria-label="Increase font size"
+              >
+                A+
+              </button>
+            </div>
+
+            {/* Language Toggle */}
+            <div className="flex items-center space-x-1 border-r border-slate-300 pr-3">
+              <Globe className="w-3 h-3 text-slate-500" />
+              <button
+                onClick={() => setLanguage('EN')}
+                className={`font-semibold ${language === 'EN' ? 'text-[#005a9c] underline' : 'text-slate-600'}`}
+              >
+                English
+              </button>
+              <span className="text-slate-300">|</span>
+              <button
+                onClick={() => setLanguage('HI')}
+                className={`font-semibold ${language === 'HI' ? 'text-[#005a9c] underline' : 'text-slate-600'}`}
+              >
+                हिंदी
+              </button>
+            </div>
+
+            {/* Screen Reader Access */}
+            <span className="hidden lg:inline text-slate-500 font-medium">
+              Screen Reader Access
+            </span>
+
+            {/* Help & Contact */}
+            <Link href="/support" className="text-slate-600 hover:text-slate-900 font-medium">
+              Help
+            </Link>
+            <Link href="/support" className="text-slate-600 hover:text-slate-900 font-medium">
+              Contact
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {navLinks.map(link => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                    isActive
-                      ? 'bg-sarthi-50 text-sarthi-700 border border-sarthi-200 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{link.name}</span>
-                </Link>
-              );
-            })}
+        </div>
+      </div>
 
-            {/* Presentation Dropdown */}
-            <div className="relative">
+      {/* =========================================================================
+          TIER 2: MAIN GOVERNMENT PORTAL IDENTITY SECTION
+         ========================================================================= */}
+      <div className="bg-white py-3 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
+          {/* Identity: Emblem + Portal Title */}
+          <div className="flex items-center space-x-3.5">
+            
+            {/* Official Emblem Placeholder Crest */}
+            <div className="flex flex-col items-center justify-center p-1.5 bg-[#f8fafc] border border-slate-300 rounded shadow-2xs shrink-0 w-12 h-14 text-center">
+              <div className="text-[9px] font-serif font-black tracking-widest text-[#0b2545] uppercase leading-tight">
+                सत्यमेव
+              </div>
+              <div className="w-6 h-6 my-0.5 rounded-full border border-[#0b2545] flex items-center justify-center text-[11px] font-bold text-[#0b2545] bg-white">
+                🏛️
+              </div>
+              <div className="text-[8px] font-serif font-bold text-[#0b2545] uppercase leading-none">
+                जयते
+              </div>
+            </div>
+
+            {/* Portal Brand & Regulatory Identity */}
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Link href="/" className="hover:opacity-90 transition">
+                  <span className="text-xl sm:text-2xl font-black tracking-tight text-[#0b2545]">
+                    UDYOG SARTHI
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-slate-600 ml-1.5">
+                    (उद्योग सारथी)
+                  </span>
+                </Link>
+                <span className="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-blue-50 text-[#005a9c] border border-blue-200">
+                  AI Regulatory Engine
+                </span>
+              </div>
+              
+              <div className="text-xs sm:text-sm font-semibold text-slate-700 leading-snug">
+                AI-Powered Industrial Approval & Compliance Coordination Platform
+              </div>
+              
+              <div className="text-[11px] text-slate-500 font-medium">
+                National & State Single Window Clearance Orchestration • Ministry of Commerce & Industry
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right: Hackathon Prototype Notice Badge & Helpline */}
+          <div className="hidden md:flex flex-col items-end text-right space-y-1">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-300">
+              <Info className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+              <span>Smart India Hackathon 2026 Prototype</span>
+            </span>
+            <div className="text-[11px] text-slate-600 flex items-center gap-1 font-medium">
+              <Phone className="w-3 h-3 text-slate-500" />
+              <span>National Single Window Helpline: <strong>1800-11-8899</strong> (09:00 - 18:00 IST)</span>
+            </div>
+            <div className="text-[10px] text-slate-500 italic">
+              Prototype Demonstration Portal • Not legally authoritative
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* =========================================================================
+          TIER 3: PRIMARY STICKY HORIZONTAL NAVIGATION BAR (NAVY BLUE)
+         ========================================================================= */}
+      <nav className="sticky top-0 z-40 bg-[#0b2545] text-white shadow-md border-y border-[#001f3f]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12">
+            
+            {/* Desktop Navigation Links */}
+            <div className="hidden xl:flex items-center space-x-0.5 overflow-x-auto">
+              {mainNavLinks.map(item => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`px-3 py-2 text-xs font-semibold whitespace-nowrap transition border-b-2 ${
+                      isActive
+                        ? 'bg-[#003865] text-white border-amber-400'
+                        : 'text-slate-200 hover:bg-[#133b5c] hover:text-white border-transparent'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* For Medium screens: Compact primary nav */}
+            <div className="hidden md:flex xl:hidden items-center space-x-1 text-xs">
+              <Link href="/" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Home</Link>
+              <Link href="/directory" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Approvals</Link>
+              <Link href="/discovery" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Discovery</Link>
+              <Link href="/register" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Apply</Link>
+              <Link href="/journey" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Status</Link>
+              <Link href="/bottlenecks" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Compliance</Link>
+              <Link href="/support" className="px-2.5 py-1.5 hover:bg-[#133b5c] rounded">Help</Link>
+            </div>
+
+            {/* Right Action Tools: Sarthi AI + Notifications + Role Switcher */}
+            <div className="flex items-center space-x-2">
+              
+              {/* Sarthi AI Assistance Trigger Button */}
               <button
-                onClick={() => setIsMoreOpen(!isMoreOpen)}
-                className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition"
+                onClick={onOpenAIChat}
+                className="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-[#1e4e79] hover:bg-[#286090] text-amber-300 text-xs font-bold border border-amber-400/40 transition shadow-2xs"
+                title="Open AI Pre-Scrutiny & Advisory Assistant"
               >
-                <span>Hackathon Evaluation</span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span className="hidden sm:inline">AI Pre-Scrutiny</span>
               </button>
 
-              {isMoreOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsMoreOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                    <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Presentation Modules
-                    </div>
-                    {presentationLinks.map(item => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setIsMoreOpen(false)}
-                        className={`block px-3 py-2 text-xs transition ${
-                          pathname === item.href
-                            ? 'bg-sarthi-50 text-sarthi-700 font-bold'
-                            : 'text-slate-700 hover:bg-slate-50'
-                        }`}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </nav>
+              {/* Notification Center */}
+              <Link
+                href="/notifications"
+                className="relative p-1.5 rounded hover:bg-[#133b5c] text-slate-200 transition"
+                title="System Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[9px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
 
-          {/* Right Action Bar */}
-          <div className="flex items-center space-x-2.5">
-            {/* AI Assistant Chat Trigger */}
-            <button
-              onClick={onOpenAIChat}
-              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold shadow-sm transition"
-              title="Open AI Regulatory Assistant"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Ask Sarthi AI</span>
-            </button>
-
-            {/* Notification Bell */}
-            <Link
-              href="/notifications"
-              className="relative p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition"
-              title="Notifications"
-            >
-              <Bell className="w-4 h-4" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-xs">
-                  {unreadCount}
+              {/* Applicant / Role Dashboard Button */}
+              <Link
+                href={
+                  currentRole === 'officer'
+                    ? '/officer'
+                    : currentRole === 'nodal'
+                    ? '/nodal'
+                    : currentRole === 'admin'
+                    ? '/admin'
+                    : '/dashboard'
+                }
+                className="px-2.5 py-1 rounded bg-[#005a9c] hover:bg-[#006bb8] text-white text-xs font-bold transition flex items-center gap-1 border border-blue-400/40"
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">
+                  {currentRole === 'officer'
+                    ? 'Department Desk'
+                    : currentRole === 'nodal'
+                    ? 'Nodal Desk'
+                    : currentRole === 'admin'
+                    ? 'Admin Console'
+                    : 'Dashboard'}
                 </span>
-              )}
-            </Link>
+              </Link>
 
-            {/* Role Switcher */}
-            <RoleSwitcher />
+              {/* Administrative Persona Switcher */}
+              <div className="text-slate-800">
+                <RoleSwitcher />
+              </div>
 
-            {/* Mobile Hamburger Toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+              {/* Mobile Hamburger Toggle */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="xl:hidden p-1.5 rounded text-white hover:bg-[#133b5c] transition"
+                aria-label="Toggle navigation menu"
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
-            Current Persona: <span className="text-sarthi-700">{currentRole}</span>
-          </div>
-          {navLinks.map(link => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100"
-              >
-                <Icon className="w-4 h-4 text-sarthi-600" />
-                <span>{link.name}</span>
-              </Link>
-            );
-          })}
-
-          <div className="border-t border-slate-100 pt-2 mt-2">
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="xl:hidden bg-[#071a30] border-t border-[#133b5c] px-4 py-3 space-y-1">
             <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
-              Hackathon Evaluation
+              Portal Menu Navigation
             </div>
-            {presentationLinks.map(item => (
+            {mainNavLinks.map(item => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50"
+                className={`block px-3 py-2 rounded text-xs font-semibold ${
+                  pathname === item.href
+                    ? 'bg-[#003865] text-white font-bold'
+                    : 'text-slate-200 hover:bg-[#133b5c]'
+                }`}
               >
                 {item.name}
               </Link>
             ))}
-          </div>
 
-          <div className="pt-2">
-            <button
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                if (onOpenAIChat) onOpenAIChat();
-              }}
-              className="w-full py-2 px-3 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center space-x-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Launch AI Regulatory Assistant</span>
-            </button>
+            <div className="pt-2 border-t border-[#133b5c] mt-2 space-y-1">
+              <Link
+                href="/dashboard"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded text-xs font-bold text-amber-300 hover:bg-[#133b5c]"
+              >
+                Enter Applicant Dashboard
+              </Link>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onOpenAIChat) onOpenAIChat();
+                }}
+                className="w-full text-left px-3 py-2 rounded text-xs font-bold text-cyan-300 hover:bg-[#133b5c]"
+              >
+                Launch AI Pre-Scrutiny Assistant
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </nav>
+
     </header>
   );
 }

@@ -3,71 +3,130 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 15, 23, 42;
-  --background-start-rgb: 248, 250, 252;
-  --background-end-rgb: 255, 255, 255;
+  --font-scale: 100%;
+  --gov-navy: #0b2545;
+  --gov-navy-dark: #001f3f;
+  --gov-blue: #005a9c;
+  --gov-blue-light: #e8f1f8;
+  --gov-gold: #f59e0b;
+  --gov-green: #15803d;
+  --gov-amber: #b45309;
+  --gov-red: #b91c1c;
+  --gov-bg: #f8fafc;
+  --gov-border: #cbd5e1;
+}
+
+html {
+  font-size: var(--font-scale);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #f8fafc;
+  color: #1e293b;
+  background-color: #f8fafc;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibility classes */
+.font-size-sm {
+  --font-scale: 90%;
+}
+.font-size-md {
+  --font-scale: 100%;
+}
+.font-size-lg {
+  --font-scale: 110%;
+}
+
+/* Government Administrative Table Styles */
+.gov-table th {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.gov-table td {
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.8125rem;
+  color: #334155;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #94a3b8;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
 
-/* React Flow DAG overrides */
+/* React Flow DAG Administrative Government Overrides */
 .react-flow__node {
   cursor: pointer;
 }
 .react-flow__edge-path {
-  stroke-width: 2.5px;
+  stroke-width: 2px;
 }
 .react-flow__handle {
   width: 8px;
   height: 8px;
-  background: #0284c7;
+  background: #005a9c;
   border: 2px solid #ffffff;
 }
 
-/* Glowing Pulse & Scanner Animation */
-@keyframes laser-scan {
+/* Subtle Government Document Scanner Animation */
+@keyframes gov-laser {
   0% {
     top: 0%;
-    opacity: 0.8;
+    opacity: 0.7;
   }
   50% {
     top: 96%;
-    opacity: 1;
+    opacity: 0.9;
   }
   100% {
     top: 0%;
-    opacity: 0.8;
+    opacity: 0.7;
   }
 }
 
 .animate-laser {
-  animation: laser-scan 2.4s ease-in-out infinite;
+  animation: gov-laser 2.2s ease-in-out infinite;
 }
 
-/* Watermark Pattern for Digital Certificate */
+/* Watermark Pattern for Official Digital Sanction Orders */
 .certificate-pattern {
-  background-image: radial-gradient(#0c406e 0.75px, transparent 0.75px), radial-gradient(#0c406e 0.75px, #ffffff 0.75px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
+  background-image: radial-gradient(#0b2545 0.75px, transparent 0.75px), radial-gradient(#0b2545 0.75px, #ffffff 0.75px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* Skip link for screen readers & keyboard accessibility */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 10px;
+  background: #0b2545;
+  color: #ffffff;
+  padding: 8px 16px;
+  z-index: 100;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  transition: top 0.2s ease;
+}
+.skip-to-content:focus {
+  top: 10px;
 }

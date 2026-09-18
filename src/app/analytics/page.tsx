@@ -1,176 +1,268 @@
 'use client';
 
 import React from 'react';
-import MetricCard from '../../components/MetricCard';
+import Link from 'next/link';
 import {
   Activity,
-  TrendingDown,
-  TrendingUp,
   Clock,
   Layers,
   FileCheck,
   Building2,
   AlertTriangle,
-  Award
+  Award,
+  Info,
+  ArrowRight,
+  TrendingUp,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function AnalyticsPage() {
-  const deptWorkloads = [
-    { name: 'MPCB (Pollution Control)', active: 42, resolved: 184, avgDays: 24, delayed: 4, bar: '78%' },
-    { name: 'MIDC Town Planning', active: 28, resolved: 210, avgDays: 16, delayed: 1, bar: '92%' },
-    { name: 'Maharashtra Fire Services', active: 14, resolved: 195, avgDays: 11, delayed: 0, bar: '98%' },
-    { name: 'MSEDCL (Power Utility)', active: 36, resolved: 142, avgDays: 29, delayed: 6, bar: '71%' },
-    { name: 'DISH (Factory Safety)', active: 22, resolved: 168, avgDays: 22, delayed: 3, bar: '84%' },
-    { name: 'MIDC Water Works', active: 11, resolved: 180, avgDays: 12, delayed: 2, bar: '94%' }
+  // 4 Government-Style Chart Data Sets (Section 18)
+  const applicationsByStatus = [
+    { label: 'Approved & Orders Granted', count: 116, percentage: 81.7, color: 'bg-emerald-700' },
+    { label: 'Under Departmental Review', count: 18, percentage: 12.7, color: 'bg-[#005a9c]' },
+    { label: 'Clarification Required (Query)', count: 5, percentage: 3.5, color: 'bg-amber-600' },
+    { label: 'Under Preliminary Scrutiny', count: 3, percentage: 2.1, color: 'bg-slate-500' }
   ];
 
-  const monthlyTurnaround = [
-    { month: 'Oct 2025', traditional: 82, udyogSarthi: 76 },
-    { month: 'Nov 2025', traditional: 84, udyogSarthi: 64 },
-    { month: 'Dec 2025', traditional: 79, udyogSarthi: 51 },
-    { month: 'Jan 2026', traditional: 85, udyogSarthi: 38 },
-    { month: 'Feb 2026', traditional: 81, udyogSarthi: 31 },
-    { month: 'Mar 2026', traditional: 83, udyogSarthi: 26.4 }
+  const applicationsByDepartment = [
+    { name: 'Maharashtra Pollution Control Board (MPCB)', count: 42, percentage: 29.6, avgDays: 24 },
+    { name: 'Maharashtra Industrial Development Corp (MIDC)', count: 38, percentage: 26.8, avgDays: 16 },
+    { name: 'Maharashtra Fire Services (MFS)', count: 24, percentage: 16.9, avgDays: 11 },
+    { name: 'Directorate of Industrial Safety & Health (DISH)', count: 22, percentage: 15.5, avgDays: 21 },
+    { name: 'MSEDCL (Power Distribution Utility)', count: 16, percentage: 11.2, avgDays: 28 }
+  ];
+
+  const processingStages = [
+    { stage: 'Pre-Establishment Stage', count: 58, percentage: 40.8, desc: 'Consent to Establish, Land Allotment, Feasibility' },
+    { stage: 'Pre-Construction Stage', count: 48, percentage: 33.8, desc: 'Building Plan, Fire NOC, Water Connection' },
+    { stage: 'Pre-Operation Stage', count: 36, percentage: 25.4, desc: 'Factory Licence, Consent to Operate, Boiler Reg' }
+  ];
+
+  const approvalTypes = [
+    { type: 'Mandatory Clearances', count: 88, percentage: 62.0, desc: 'Statutory requirements applicable across all units' },
+    { type: 'Conditional / Sector-Specific', count: 54, percentage: 38.0, desc: 'Triggered by water, power, or hazardous material thresholds' }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      {/* Top Header */}
-      <div className="border-b border-slate-200 pb-6">
-        <div className="flex items-center space-x-2 text-xs font-semibold text-sarthi-600 mb-1">
-          <Activity className="w-4 h-4 text-sarthi-600" />
-          <span>Executive Business Intelligence & SLA Telemetry</span>
+      {/* Government Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs text-slate-500 font-medium">
+        <Link href="/" className="hover:text-[#0b2545]">Home</Link>
+        <span>/</span>
+        <span className="text-slate-900 font-bold">Prototype Demonstration Metrics</span>
+      </nav>
+
+      {/* Page Title Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <div className="flex items-center space-x-2 text-xs font-semibold text-[#005a9c] mb-1">
+            <Activity className="w-4 h-4 text-[#005a9c]" />
+            <span>Operational Telemetry & Performance Statistics</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0b2545] tracking-tight">
+            Prototype Demonstration Metrics
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Administrative monitoring metrics, departmental workload distribution, and clearance turnaround performance.
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          System Analytics & Regulatory Performance Index
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 mt-1">
-          Quantitative telemetry evaluating clearance velocity, AI document first-time right rates, and inter-departmental workload.
-        </p>
+
+        <div className="flex items-center space-x-2.5">
+          <span className="text-xs font-bold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-300 font-mono">
+            Smart India Hackathon 2026 Test Data
+          </span>
+        </div>
       </div>
 
-      {/* 4 High-Impact BI KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <MetricCard
-          title="Average Clearance Time"
-          value="26.4 Days"
-          subtitle="Down from 82 days baseline"
-          change="-67.8% reduction"
-          isPositive={true}
-          icon={Clock}
-          color="emerald"
-        />
-        <MetricCard
-          title="First-Time Right Rate"
-          value="91.2%"
-          subtitle="Pre-audited dossiers"
-          change="+34% increase"
-          isPositive={true}
-          icon={FileCheck}
-          color="blue"
-        />
-        <MetricCard
-          title="Total Capital Facilitated"
-          value="₹1,420 Cr"
-          subtitle="Industrial capex cleared"
-          icon={Award}
-          color="purple"
-        />
-        <MetricCard
-          title="Query Cycle Frequency"
-          value="0.32 / App"
-          subtitle="Down from 1.8 queries per application"
-          change="-82% fewer queries"
-          isPositive={true}
-          icon={TrendingDown}
-          color="emerald"
-        />
+      {/* Statutory Guidance Notice */}
+      <div className="p-3.5 bg-blue-50 border-l-4 border-[#005a9c] text-slate-800 text-xs leading-relaxed flex items-start space-x-2.5">
+        <Info className="w-4 h-4 text-[#005a9c] shrink-0 mt-0.5" />
+        <div>
+          <strong>Data Governance Disclaimer:</strong> Figures presented on this page are clearly designated demonstration metrics generated for validating the single-window orchestration and SLA tracking engine of the UDYOG SARTHI prototype.
+        </div>
       </div>
 
-      {/* Chart 1: Processing Velocity Trend (Traditional vs UDYOG SARTHI) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
-          <div>
-            <h3 className="text-base font-bold text-slate-900">
-              Clearance Turnaround Velocity (Days to Grant Sanction)
+      {/* =========================================================================
+          SECTION 18: 4 GOVERNMENT-STYLE CHARTS
+         ========================================================================= */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Chart 1: Applications by Status */}
+        <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-4">
+          <div className="border-b border-slate-200 pb-2 flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545]">
+              1. Applications by Status (Total: 142)
             </h3>
-            <p className="text-xs text-slate-500">
-              Comparison between traditional single-window timelines and UDYOG SARTHI AI-coordinated orchestration
-            </p>
+            <span className="text-[11px] text-slate-500 font-mono">Status Breakdown</span>
           </div>
-          <div className="flex items-center space-x-4 text-xs font-mono">
-            <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-3 h-3 rounded bg-slate-300" /> Traditional Portal (82d avg)
-            </span>
-            <span className="flex items-center gap-1.5 text-emerald-700 font-bold">
-              <span className="w-3 h-3 rounded bg-emerald-500" /> UDYOG SARTHI (26.4d)
-            </span>
+
+          <div className="space-y-3">
+            {applicationsByStatus.map((item, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-800">{item.label}</span>
+                  <span className="font-mono text-slate-600 font-bold">
+                    {item.count} ({item.percentage}%)
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div
+                    className={`h-full ${item.color}`}
+                    style={{ width: `${item.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Visual Bar Comparison Chart */}
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 pt-4">
-          {monthlyTurnaround.map((m, idx) => (
-            <div key={idx} className="flex flex-col items-center space-y-2">
-              <div className="h-44 w-full flex items-end justify-center space-x-2 bg-slate-50 rounded-xl p-2 border border-slate-100">
-                {/* Traditional Bar */}
-                <div
-                  className="w-4 bg-slate-300 rounded-t transition-all hover:bg-slate-400 relative group"
-                  style={{ height: `${(m.traditional / 100) * 100}%` }}
-                >
-                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] font-mono bg-slate-800 text-white px-1 rounded opacity-0 group-hover:opacity-100 transition">
-                    {m.traditional}d
+        {/* Chart 2: Applications by Department */}
+        <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-4">
+          <div className="border-b border-slate-200 pb-2 flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545]">
+              2. Applications by Department (Total: 142)
+            </h3>
+            <span className="text-[11px] text-slate-500 font-mono">Workload Allocation</span>
+          </div>
+
+          <div className="space-y-3">
+            {applicationsByDepartment.map((dept, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-800 truncate max-w-[240px]">{dept.name}</span>
+                  <span className="font-mono text-slate-600 font-bold">
+                    {dept.count} ({dept.percentage}%) • Avg {dept.avgDays}d
                   </span>
                 </div>
-                {/* UDYOG SARTHI Bar */}
-                <div
-                  className="w-4 bg-gradient-to-t from-emerald-600 to-teal-500 rounded-t transition-all hover:opacity-90 relative group"
-                  style={{ height: `${(m.udyogSarthi / 100) * 100}%` }}
-                >
-                  <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold bg-emerald-700 text-white px-1 rounded opacity-0 group-hover:opacity-100 transition">
-                    {m.udyogSarthi}d
-                  </span>
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div
+                    className="h-full bg-[#005a9c]"
+                    style={{ width: `${dept.percentage}%` }}
+                  />
                 </div>
               </div>
-              <div className="text-[11px] font-mono text-slate-600 font-semibold">{m.month}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* Chart 3: Processing Stage */}
+        <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-4">
+          <div className="border-b border-slate-200 pb-2 flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545]">
+              3. Processing Stage Distribution
+            </h3>
+            <span className="text-[11px] text-slate-500 font-mono">Lifecycle Pipeline</span>
+          </div>
+
+          <div className="space-y-3">
+            {processingStages.map((stg, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-semibold text-slate-800">{stg.stage}</span>
+                    <span className="text-[10px] text-slate-500 block">{stg.desc}</span>
+                  </div>
+                  <span className="font-mono text-slate-600 font-bold shrink-0">
+                    {stg.count} ({stg.percentage}%)
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div
+                    className="h-full bg-slate-700"
+                    style={{ width: `${stg.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chart 4: Approval Type */}
+        <div className="bg-white border border-slate-300 rounded p-5 shadow-xs space-y-4">
+          <div className="border-b border-slate-200 pb-2 flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545]">
+              4. Approval Type Classification
+            </h3>
+            <span className="text-[11px] text-slate-500 font-mono">Regulatory Categories</span>
+          </div>
+
+          <div className="space-y-3">
+            {approvalTypes.map((t, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-semibold text-slate-800">{t.type}</span>
+                    <span className="text-[10px] text-slate-500 block">{t.desc}</span>
+                  </div>
+                  <span className="font-mono text-slate-600 font-bold shrink-0">
+                    {t.count} ({t.percentage}%)
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div
+                    className="h-full bg-[#0b2545]"
+                    style={{ width: `${t.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
-      {/* Chart 2: Department Workload & SLA Adherence */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="border-b border-slate-100 pb-4">
-          <h3 className="text-base font-bold text-slate-900">
-            Participating Department Workload & SLA Efficiency Index
+      {/* SLA Compliance Table */}
+      <div className="bg-white border border-slate-300 rounded overflow-hidden shadow-xs">
+        <div className="bg-[#f8fafc] px-4 py-3 border-b border-slate-200">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#0b2545]">
+            Statutory Public Services Guarantee SLA Compliance Matrix
           </h3>
-          <p className="text-xs text-slate-500">Live throughput across 6 core industrial approval authorities</p>
         </div>
 
-        <div className="space-y-4">
-          {deptWorkloads.map((dept, idx) => (
-            <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <div className="font-bold text-xs text-slate-900">{dept.name}</div>
-                <div className="text-[11px] font-mono text-slate-600 flex items-center gap-3">
-                  <span>{dept.active} Active Queued</span>
-                  <span>•</span>
-                  <span className="text-emerald-700 font-bold">{dept.resolved} Sanctioned</span>
-                  <span>•</span>
-                  <span>Avg: {dept.avgDays} Days</span>
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-sarthi-600 to-emerald-500 rounded-full transition-all duration-500"
-                  style={{ width: dept.bar }}
-                />
-              </div>
-            </div>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#f1f5f9] text-[#0b2545] font-bold uppercase tracking-wider border-b border-slate-300">
+              <tr>
+                <th className="px-4 py-2.5 border-r border-slate-200">Clearance / Permit</th>
+                <th className="px-4 py-2.5 border-r border-slate-200">Competent Authority</th>
+                <th className="px-4 py-2.5 border-r border-slate-200">Statutory SLA</th>
+                <th className="px-4 py-2.5 border-r border-slate-200">Avg. Turnaround</th>
+                <th className="px-4 py-2.5 text-right">Compliance Rate</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 text-slate-800">
+              <tr>
+                <td className="px-4 py-3 border-r border-slate-200 font-semibold">Consent to Establish (CTE)</td>
+                <td className="px-4 py-3 border-r border-slate-200">MPCB</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">45 Days</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">24 Days</td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700">96.8%</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td className="px-4 py-3 border-r border-slate-200 font-semibold">Building Plan Sanction</td>
+                <td className="px-4 py-3 border-r border-slate-200">MIDC Town Planning</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">30 Days</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">16 Days</td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700">98.2%</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-3 border-r border-slate-200 font-semibold">Provisional Fire NOC</td>
+                <td className="px-4 py-3 border-r border-slate-200">Maharashtra Fire Services</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">15 Days</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">11 Days</td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700">100.0%</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td className="px-4 py-3 border-r border-slate-200 font-semibold">Factory Registration Licence</td>
+                <td className="px-4 py-3 border-r border-slate-200">DISH</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">30 Days</td>
+                <td className="px-4 py-3 border-r border-slate-200 font-mono">21 Days</td>
+                <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700">94.5%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

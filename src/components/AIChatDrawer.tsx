@@ -98,36 +98,36 @@ export default function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
     <div className="fixed inset-0 z-50 flex justify-end bg-slate-950/40 backdrop-blur-2xs">
       <div className="bg-white w-full max-w-md h-full shadow-2xl border-l border-slate-200 flex flex-col animate-in slide-in-from-right duration-200">
         
-        {/* Drawer Header */}
-        <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        {/* Drawer Header (Government Navy Style) */}
+        <div className="px-5 py-3.5 bg-[#0b2545] text-white flex items-center justify-between border-b border-[#001f3f]">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 text-white shadow-sm">
-              <Sparkles className="w-5 h-5" />
+            <div className="p-1.5 rounded bg-white/10 text-amber-300">
+              <Sparkles className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-bold">Sarthi AI Assistant</h3>
-                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                  Regulatory LLM
+                <h3 className="text-sm font-bold text-white">Sarthi AI Assistant</h3>
+                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  Regulatory Pre-Scrutiny
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Intelligent Industrial Approval Co-Pilot</p>
+              <p className="text-[10px] text-slate-300">Regulatory Advisory & Decision Support</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded text-slate-300 hover:text-white hover:bg-white/10 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Disclaimer Bar */}
-        <div className="px-4 py-2 bg-amber-50 border-b border-amber-200 text-[11px] text-amber-900 flex items-center space-x-1.5">
-          <ShieldAlert className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-          <span>
-            <strong>AI Guidance Notice:</strong> Advisory recommendations only. Not a substitute for statutory authority sanction.
-          </span>
+        {/* Section 11 Mandatory Disclaimer Bar */}
+        <div className="p-3 bg-amber-50 border-b border-amber-300 text-[11px] text-amber-950 flex items-start space-x-2">
+          <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div className="leading-snug">
+            <strong>Statutory Disclaimer:</strong> “AI-generated outputs are provided for assistance and pre-scrutiny only. Final decisions and statutory approvals are made by the competent government authority.”
+          </div>
         </div>
 
         {/* Chat Messages */}

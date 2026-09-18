@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
 import {
@@ -61,29 +62,37 @@ function RegisterWizardContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
+      {/* Government Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs text-slate-500 font-medium">
+        <Link href="/" className="hover:text-[#0b2545]">Home</Link>
+        <span>/</span>
+        <span className="text-slate-900 font-bold">New Industrial Application (CAF)</span>
+      </nav>
+
       {/* Header & Title */}
-      <div className="text-center space-y-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-sarthi-700 bg-sarthi-50 px-3 py-1 rounded-full border border-sarthi-200">
-          Smart Entrepreneur Onboarding
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+      <div className="border-b border-slate-200 pb-5">
+        <div className="flex items-center space-x-2 text-xs font-semibold text-[#005a9c] mb-1">
+          <Building2 className="w-4 h-4 text-[#005a9c]" />
+          <span>Common Application Form (CAF) • Single Window Onboarding</span>
+        </div>
+        <h1 className="text-xl sm:text-2xl font-bold text-[#0b2545] tracking-tight">
           Register Business & Profile Industrial Project
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-          Our intelligent rules engine converts your enterprise profile into an exact, ordered regulatory journey.
+        <p className="text-xs sm:text-sm text-slate-600 mt-1">
+          Unified investor onboarding capturing corporate identifiers, land status, proposed capital outlay, and utility requirements under the Single Window Act.
         </p>
       </div>
 
-      {/* 3-Step Wizard Indicator */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+      {/* 3-Step Wizard Indicator (Government Style) */}
+      <div className="bg-white p-4 border border-slate-300 rounded shadow-xs">
         <div className="flex items-center justify-between relative">
           
           {/* Connecting Track Line */}
           <div className="absolute top-1/2 left-8 right-8 -translate-y-1/2 h-0.5 bg-slate-200 -z-0" />
           <div
-            className="absolute top-1/2 left-8 -translate-y-1/2 h-0.5 bg-sarthi-600 transition-all duration-300 -z-0"
+            className="absolute top-1/2 left-8 -translate-y-1/2 h-0.5 bg-[#0b2545] transition-all duration-300 -z-0"
             style={{ width: currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%' }}
           />
 
@@ -93,16 +102,16 @@ function RegisterWizardContent() {
             className="relative z-10 flex flex-col items-center group cursor-pointer"
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition ${
                 currentStep >= 1
-                  ? 'bg-sarthi-600 text-white shadow-md shadow-sarthi-600/30'
-                  : 'bg-slate-100 text-slate-500 border border-slate-300'
+                  ? 'bg-[#0b2545] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 border border-slate-300'
               }`}
             >
               1
             </div>
-            <span className="text-xs font-semibold text-slate-800 mt-2">Business Details</span>
-            <span className="text-[10px] text-slate-400">Entity & Tax IDs</span>
+            <span className="text-xs font-bold text-slate-800 mt-1.5">Business Details</span>
+            <span className="text-[10px] text-slate-500">Entity & Tax IDs</span>
           </button>
 
           {/* Step 2 Pill */}
@@ -111,16 +120,16 @@ function RegisterWizardContent() {
             className="relative z-10 flex flex-col items-center group cursor-pointer"
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition ${
                 currentStep >= 2
-                  ? 'bg-sarthi-600 text-white shadow-md shadow-sarthi-600/30'
-                  : 'bg-slate-100 text-slate-500 border border-slate-300'
+                  ? 'bg-[#0b2545] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 border border-slate-300'
               }`}
             >
               2
             </div>
-            <span className="text-xs font-semibold text-slate-800 mt-2">Project Details</span>
-            <span className="text-[10px] text-slate-400">Location, Capex & Land</span>
+            <span className="text-xs font-bold text-slate-800 mt-1.5">Project Details</span>
+            <span className="text-[10px] text-slate-500">Location, Capex & Land</span>
           </button>
 
           {/* Step 3 Pill */}
@@ -129,22 +138,22 @@ function RegisterWizardContent() {
             className="relative z-10 flex flex-col items-center group cursor-pointer"
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition ${
                 currentStep >= 3
-                  ? 'bg-sarthi-600 text-white shadow-md shadow-sarthi-600/30'
-                  : 'bg-slate-100 text-slate-500 border border-slate-300'
+                  ? 'bg-[#0b2545] text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 border border-slate-300'
               }`}
             >
               3
             </div>
-            <span className="text-xs font-semibold text-slate-800 mt-2">Project Requirements</span>
-            <span className="text-[10px] text-slate-400">Utilities, Safety & Effluent</span>
+            <span className="text-xs font-bold text-slate-800 mt-1.5">Project Requirements</span>
+            <span className="text-[10px] text-slate-500">Utilities, Safety & Effluent</span>
           </button>
         </div>
       </div>
 
       {/* Main Wizard Form Container */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+      <div className="bg-white border border-slate-300 rounded shadow-xs p-6 space-y-6">
         
         {/* STEP 1: BUSINESS DETAILS */}
         {currentStep === 1 && (
@@ -488,22 +497,22 @@ function RegisterWizardContent() {
               type="button"
               onClick={handleNext}
               disabled={isGenerating}
-              className="flex items-center space-x-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-sarthi-600 to-blue-600 hover:from-sarthi-500 hover:to-blue-500 text-white font-bold text-xs shadow-md transition disabled:opacity-50"
+              className="flex items-center space-x-2 px-5 py-2.5 rounded bg-[#0b2545] hover:bg-[#005a9c] text-white font-bold text-xs transition shadow-xs disabled:opacity-50"
             >
               {isGenerating ? (
                 <>
                   <Sparkles className="w-4 h-4 animate-spin text-amber-300" />
-                  <span>Analyzing Regulatory Rules...</span>
+                  <span>Evaluating Statutory Rules...</span>
                 </>
               ) : currentStep === 3 ? (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Generate AI Approval Journey</span>
+                  <Building2 className="w-4 h-4 text-amber-300" />
+                  <span>Submit CAF & Check Required Clearances</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               ) : (
                 <>
-                  <span>Save & Continue</span>
+                  <span>Save & Proceed to Step {currentStep + 1}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
